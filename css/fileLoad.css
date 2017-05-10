@@ -1,0 +1,56 @@
+.form__upload {
+  position: relative;
+  min-height: 42px;
+}
+
+.form__upload--file {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  max-width: 160px;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 2;
+  opacity: 0;
+}
+
+.form__upload--button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 1;
+  min-width: 160px;
+  padding: 10px;
+  color: #fff;
+  background: #5cb85c;
+  border: 2px solid #4cae4c;
+  font-size: 16px;
+  white-space: nowrap;
+  outline: none
+}
+
+
+#fileLoader__delete {
+  left: 180px;
+  background: #fd3434;
+  border-color: #d10000;
+}
+
+.form__upload--button:hover, .fileLoad__remove:hover {
+  opacity: 0.8
+}
+
+.fileLoad__result--list {
+  margin-top: 20px;
+}
+
+.fileLoad__remove {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0 8px;
+  color: red;
+  cursor: pointer
+}
+
