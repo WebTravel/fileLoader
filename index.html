@@ -13,8 +13,14 @@
 </head>
 <body>
   <div class="form__wrapper"></div>
-  
-
   <script src="js/fileLoad.js"></script>
+  <script>
+    // Вызов плагина
+    $(document).ready(function() {
+      $('.form__wrapper').fileLoader({
+        'addButtonText' : 'Добавить файлы',
+      }).addClass('les');
+    });
+  </script>
 </body>
 </html>

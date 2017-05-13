@@ -1,9 +1,10 @@
 ; (function ($, window, document) {
 
-//defaults value
+// стандартные значения
 var defaults = {
- 'addButtonText' : 'Выберите файлы',
- 'deleteButtonText' : 'Удалить все файлы'
+ 'addButtonText' : 'Выберите файлы', // текст кнопки добавления файлов
+ 'deleteButtonText' : 'Удалить все файлы', // текст кнопки удаления файлов
+ 'check' : true // проверка на дублирование файлов
 }
 
 function FileLoader(element, options) {
@@ -12,10 +13,10 @@ function FileLoader(element, options) {
   this.init();
 }
 
-//call init function
+// вызов функции инициализации
 FileLoader.prototype.init = function () {
 
-  //Variable-list
+  // список переменных
   var self = this,
       element = this.element,
       inputText = '<input type="file" id="fileLoader__input" class="form__upload--file" name="files" multiple>',
@@ -26,33 +27,46 @@ FileLoader.prototype.init = function () {
       finalFiles = [],
       form = '<form action="" id="fileLoader" class="fileLoader"><div class="form__upload">' + inputText + addFileButton + '</div></form>';
 
-  //add Form inner selector
+  // добавляем форму внутрь селектора, к которому применяется плагин
   element.append(form + resultListWrapper);
 
-  //Get file-list
+  // Получаем список файлов, и переносим их в массив, выводим визуальное отображение
   $('#fileLoader__input').on('change', function(e) {
-    var files = this.files;
-    //Move file-list in object, create visual file liast and delete files button
-    $.each(files,function(idx, elm){
-      finalFiles.push(elm);
-      var list = files[idx].name;
-      $('.fileLoader__result--list').append('<div class="fileLoad__result--item">' + list + removeFile + '</div>');
-      console.log(list);
-      if($('#fileLoader__delete').length == 0) {
-        $('#fileLoader__add').after(removeAllFilesButton);
+    var files = this.files; // получаем файлы
+    $.each(files,function(idx, elm){ // проходим в цикле по файлам
+      var its_new_file = true; // создаем переменную, чтобы представить, что файл новый
+      //check files by name and size
+      if (self.options.check === true) { // если пользователь хочет проверять файлы на дубликаты
+        $.each(finalFiles,function(idxInner, elmInner){ // проходим по массиву файлов, добавленных ранее
+          if (elmInner.size == elm.size && elmInner.name == elm.name) { // если размер и имя равны
+            its_new_file = false; // это не новый файл
+            return true; // переходим на следующую итерацию
+          }
+        });
       }
+
+      if (its_new_file) { // если файл новый
+        finalFiles.push(elm); // добавляем его в массив
+        // Ниже выводим визуальный список файлов
+        var list = files[idx].name;
+        $('.fileLoader__result--list').append('<div class="fileLoad__result--item">' + list + removeFile + '</div>');
+        if($('#fileLoader__delete').length == 0) {
+          $('#fileLoader__add').after(removeAllFilesButton);
+        }
+      }
+
     });
     console.log(finalFiles);
   });
 
-  //Delete all files on click "delete-all-files button"
+  // Удаление всех файлов по нажатию на кнопку
   $('#fileLoader__delete').on('click', function() {
     $(this).remove();
     finalFiles = [];
     $('.fileLoader__result--list').empty();
   });
 
-  //Delete file from file-list
+  // Удаление отдельного файла из списка
   $(document).on('click', '.fileLoad__remove', function() {
     var parentElem = $(this).parent('.fileLoad__result--item'),
         parentElemInd = parentElem.index();
@@ -74,10 +88,3 @@ $.fn.fileLoader = function (options) {
 
 
 })(jQuery, window, document);
-
-
-
-//Call Plugin
-$('.form__wrapper').fileLoader({
-  'addButtonText' : 'Добавить файлы'
-}).addClass('les');
