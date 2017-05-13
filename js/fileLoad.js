@@ -20,7 +20,10 @@ FileLoader.prototype.init = function () {
       element = this.element,
       inputText = '<input type="file" id="fileLoader__input" class="form__upload--file" name="files" multiple>',
       addFileButton = '<button class="form__upload--button" id="fileLoader__add">'+ self.options.addButtonText +'</button>',
-      resultListWrapper = '<div class="fileLoader__result--wrapper"></div>',
+      removeAllFilesButton = '<button class="form__upload--button" id="fileLoader__delete">'+ self.options.deleteButtonText +'</button>',
+      removeFile = '<span class="fileLoad__remove">&#9746;</span>',
+      resultListWrapper = '<div class="fileLoader__result--list"></div>',
+      finalFiles = [],
       form = '<form action="" id="fileLoader" class="fileLoader"><div class="form__upload">' + inputText + addFileButton + '</div></form>';
 
   //add Form inner selector
@@ -28,56 +31,38 @@ FileLoader.prototype.init = function () {
 
   //Get file-list
   $('#fileLoader__input').on('change', function(e) {
-
-    var files = this.files,
-        len = files.length,
-        finalFiles = {},
-        removeFile = '<span class="fileLoad__remove">&#9746;</span>',
-        removeAllFilesButton = '<button class="form__upload--button" id="fileLoader__delete">'+ self.options.deleteButtonText +'</button>';
-
-    //Move file-list in object
+    var files = this.files;
+    //Move file-list in object, create visual file liast and delete files button
     $.each(files,function(idx, elm){
-      finalFiles[idx] = elm;
-    });
-
-    //Create "delete-all-files button"
-    if(!$.isEmptyObject(finalFiles)) {
-      $('#fileLoader__add').after(removeAllFilesButton);
-    }
-
-    //Delete all files on click "delete-all-files button"
-    $('#fileLoader__delete').on('click', function() {
-      $(this).detach();
-      finalFiles = {};
-      $('.fileLoader__result--wrapper').empty();
-      console.log(finalFiles);
-    });
-
-
-    //Create visual file-list for user
-    for (var i = 0; i < len; i++) { 
-      var list = finalFiles[i].name;
-      $('.fileLoader__result--wrapper').append('<div class="fileLoad__result--list" id="'+ 'fileItem' + i +'">' + list + removeFile + '</div>');
-    }
-
-    //Delete file from file-list
-    $('.fileLoad__remove').on('click', function() {
-      var fileId = $(this).parent().attr('id'),
-        num = fileId.slice(8, fileId.length);
-        
-      if(finalFiles[num].length != 0) {
-        $(this).parent().detach();
-        delete finalFiles[num];
+      finalFiles.push(elm);
+      var list = files[idx].name;
+      $('.fileLoader__result--list').append('<div class="fileLoad__result--item">' + list + removeFile + '</div>');
+      console.log(list);
+      if($('#fileLoader__delete').length == 0) {
+        $('#fileLoader__add').after(removeAllFilesButton);
       }
-      
-      if($.isEmptyObject(finalFiles)) {
-        if($('#fileLoader__delete').length > 0) {
-          $('#fileLoader__delete').detach();
-        }
-      }
-      console.log(finalFiles);
     });
- 
+    console.log(finalFiles);
+  });
+
+  //Delete all files on click "delete-all-files button"
+  $('#fileLoader__delete').on('click', function() {
+    $(this).remove();
+    finalFiles = [];
+    $('.fileLoader__result--list').empty();
+  });
+
+  //Delete file from file-list
+  $(document).on('click', '.fileLoad__remove', function() {
+    var parentElem = $(this).parent('.fileLoad__result--item'),
+        parentElemInd = parentElem.index();
+    finalFiles.splice(parentElemInd, 1); //в скобках указаны параметры(индекс элемента в массиве, количество файлов)
+    parentElem.remove();
+    console.log(finalFiles);
+    
+    if(finalFiles.length == 0) {
+      $('#fileLoader__delete').remove();
+    }
   });
 
 };
