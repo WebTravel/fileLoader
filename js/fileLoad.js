@@ -4,7 +4,8 @@
 var defaults = {
  'addButtonText' : 'Выберите файлы', // текст кнопки добавления файлов
  'deleteButtonText' : 'Удалить все файлы', // текст кнопки удаления файлов
- 'check' : true // проверка на дублирование файлов
+ 'check' : true, // проверка на дублирование файлов
+ 'validate' : ''
 }
 
 function FileLoader(element, options) {
@@ -35,6 +36,20 @@ FileLoader.prototype.init = function () {
     var files = this.files; // получаем файлы
     $.each(files,function(idx, elm){ // проходим в цикле по файлам
       var its_new_file = true; // создаем переменную, чтобы представить, что файл новый
+
+      // Валидация расширения файлов
+      // if(self.options.validate !== '') {//если графа валидации не пустая
+      //   $.each(finalFiles,function(idxInner, elmInner){
+      //   var elmArr = elm.name.split('.');
+      //     for(var i = 0; i <= elmArr.length; i++) {//проходимся в цикле  
+      //       if(self.options.validate.indexOf(elmArr[i]) + 1) {//проверяем содержит ли файл нужное нам расширение
+      //         its_new_file = false; // файл не прошел валидацию
+      //         return true; // переходим на следующую итерацию
+      //       }
+      //     }
+      //   });
+      // }
+
       //check files by name and size
       if (self.options.check === true) { // если пользователь хочет проверять файлы на дубликаты
         $.each(finalFiles,function(idxInner, elmInner){ // проходим по массиву файлов, добавленных ранее
@@ -46,6 +61,7 @@ FileLoader.prototype.init = function () {
       }
 
       if (its_new_file) { // если файл новый
+
         finalFiles.push(elm); // добавляем его в массив
         // Ниже выводим визуальный список файлов
         var list = files[idx].name;
