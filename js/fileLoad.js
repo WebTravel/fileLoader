@@ -4,6 +4,7 @@
 var defaults = {
  'addButtonText' : 'Выберите файлы', // текст кнопки добавления файлов
  'deleteButtonText' : 'Удалить все файлы', // текст кнопки удаления файлов
+  'extensionText' : 'Допустимое расширение файлов', // текст предупреждения допустимых расширений файла
  'check' : true, // проверка на дублирование файлов
  'validate' : ''
 }
@@ -26,10 +27,14 @@ FileLoader.prototype.init = function () {
       removeFile = '<span class="fileLoad__remove">&#9746;</span>',
       resultListWrapper = '<div class="fileLoader__result--list"></div>',
       finalFiles = [],
-      form = '<form action="" id="fileLoader" class="fileLoader"><div class="form__upload">' + inputText + addFileButton + '</div></form>';
+      form = '<form action="" id="fileLoader" class="fileLoader"><div class="form__upload">' + inputText + addFileButton + '</div></form>',
+      extSel = '<div class="fileLoad__extension">'+ self.options.extensionText+' ' + self.options.validate + '</div>'
 
   // добавляем форму внутрь селектора, к которому применяется плагин
   element.append(form + resultListWrapper);
+  if(self.options.validate !== '') {
+    element.append(extSel);
+  }
 
   // Получаем список файлов, и переносим их в массив, выводим визуальное отображение
   $('#fileLoader__input').on('change', function(e) {
@@ -37,20 +42,22 @@ FileLoader.prototype.init = function () {
     $.each(files,function(idx, elm){ // проходим в цикле по файлам
       var its_new_file = true; // создаем переменную, чтобы представить, что файл новый
 
-      // Валидация расширения файлов
-      // if(self.options.validate !== '') {//если графа валидации не пустая
-      //   $.each(finalFiles,function(idxInner, elmInner){
-      //   var elmArr = elm.name.split('.');
-      //     for(var i = 0; i <= elmArr.length; i++) {//проходимся в цикле  
-      //       if(self.options.validate.indexOf(elmArr[i]) + 1) {//проверяем содержит ли файл нужное нам расширение
-      //         its_new_file = false; // файл не прошел валидацию
-      //         return true; // переходим на следующую итерацию
-      //       }
-      //     }
-      //   });
-      // }
+      //Проверка файлов на расширение
+      if(self.options.validate !== '') {//если графа валидации не пустая
+        var filesExt = self.options.validate.split(','), // массив расширений
+            elmArr = elm.name.split('.'),//массив с файлами
+            ext = elmArr[elmArr.length - 1];//расширение файла
+        for(var i = 0; i < filesExt.length; i++) {
+          if(ext == filesExt[i]) { //сравниеваем расширение с элементами массива
+            its_new_file = true;
+            break;
+          } else {
+            its_new_file = false;
+          }
+        }
+      }
 
-      //check files by name and size
+      //Проверка файла по имени и размеру
       if (self.options.check === true) { // если пользователь хочет проверять файлы на дубликаты
         $.each(finalFiles,function(idxInner, elmInner){ // проходим по массиву файлов, добавленных ранее
           if (elmInner.size == elm.size && elmInner.name == elm.name) { // если размер и имя равны
@@ -60,8 +67,8 @@ FileLoader.prototype.init = function () {
         });
       }
 
+      //Формируем итоговый список файлов
       if (its_new_file) { // если файл новый
-
         finalFiles.push(elm); // добавляем его в массив
         // Ниже выводим визуальный список файлов
         var list = files[idx].name;
@@ -72,7 +79,7 @@ FileLoader.prototype.init = function () {
       }
 
     });
-    console.log(finalFiles);
+    //console.log(finalFiles);
   });
 
   // Удаление всех файлов по нажатию на кнопку
