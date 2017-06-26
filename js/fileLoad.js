@@ -4,7 +4,8 @@
 var defaults = {
  'addButtonText' : 'Выберите файлы', // текст кнопки добавления файлов
  'deleteButtonText' : 'Удалить все файлы', // текст кнопки удаления файлов
-  'extensionText' : 'Допустимое расширение файлов', // текст предупреждения допустимых расширений файла
+  'extensionText' : 'Допустимое расширение файлов:', // текст предупреждения допустимых расширений файла
+  'dropText' : 'Перенесите файлы мышью',//текст кнопки ниже
  'check' : true, // проверка на дублирование файлов
  'validate' : ''
 }
@@ -21,20 +22,25 @@ FileLoader.prototype.init = function () {
   // список переменных
   var self = this,
       element = this.element,
+      finalFiles = [],
       inputText = '<input type="file" id="fileLoader__input" class="form__upload--file" name="files" multiple>',
       addFileButton = '<button class="form__upload--button" id="fileLoader__add">'+ self.options.addButtonText +'</button>',
       removeAllFilesButton = '<button class="form__upload--button" id="fileLoader__delete">'+ self.options.deleteButtonText +'</button>',
       removeFile = '<span class="fileLoad__remove">&#9746;</span>',
       resultListWrapper = '<div class="fileLoader__result--list"></div>',
-      finalFiles = [],
-      form = '<form action="" id="fileLoader" class="fileLoader"><div class="form__upload">' + inputText + addFileButton + '</div></form>',
-      extSel = '<div class="fileLoad__extension">'+ self.options.extensionText+' ' + self.options.validate + '</div>'
+      dropTitle='<div class="fileLoader__title">'+ self.options.dropText +'</div>'
+      form = '<form action="" id="fileLoader" class="fileLoader"><div class="form__upload" id="dropzone">' + inputText + addFileButton + dropTitle + '</div></form>',
+      extSel = '<div class="fileLoad__extension">'+ self.options.extensionText+' ' + self.options.validate + '</div>',
 
   // добавляем форму внутрь селектора, к которому применяется плагин
-  element.append(form + resultListWrapper);
+  element.append(form);
   if(self.options.validate !== '') {
     element.append(extSel);
   }
+  element.append(resultListWrapper);
+
+  //Обрабатываем drag&drop загрузку
+  $('#dropzone')
 
   // Получаем список файлов, и переносим их в массив, выводим визуальное отображение
   $('#fileLoader__input').on('change', function(e) {
