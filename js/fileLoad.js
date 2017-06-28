@@ -1,5 +1,8 @@
 ; (function ($, window, document) {
 
+//TODO
+// Вынести массив расширений из функций, добавить колбеки для пользователя, драг-дроп проверить, jsDoc погуглить.
+
 // стандартные значения
 var defaults = {
  'addButtonText' : 'Выберите файлы', // текст кнопки добавления файлов
@@ -41,8 +44,6 @@ FileLoader.prototype.init = function () {
   }
   element.append(resultListWrapper);
 
-  //Обрабатываем drag&drop загрузку
-  $('#dropzone')
 
   // Получаем список файлов, и переносим их в массив, выводим визуальное отображение
   $('#fileLoader__input').on('change', function(e) {
@@ -91,8 +92,8 @@ FileLoader.prototype.init = function () {
   });
 
   // Удаление всех файлов по нажатию на кнопку
-  $('#fileLoader__delete').on('click', function() {
-    $(this).remove();
+  $(document).on('click', '#fileLoader__delete', function() {
+    $('.fileLoad__result--button').remove();
     finalFiles = [];
     $('.fileLoader__result--list').empty();
   });
@@ -103,10 +104,8 @@ FileLoader.prototype.init = function () {
         parentElemInd = parentElem.index();
     finalFiles.splice(parentElemInd, 1); //в скобках указаны параметры(индекс элемента в массиве, количество файлов)
     parentElem.remove();
-    console.log(finalFiles);
-    
     if(finalFiles.length == 0) {
-      $('#fileLoader__delete').remove();
+      $('.fileLoad__result--button').remove();
     }
   });
 
