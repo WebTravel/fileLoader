@@ -1,3 +1,22 @@
+/*Fonts*/
+@font-face {
+  font-family: 'icons';
+  src: url('../fonts/icon/icons.eot');
+  src: url('../fonts/icon/icons.eot?#iefix') format('embedded-opentype'),
+  url('../fonts/icon/icons.woff2') format('woff2'),
+  url('../fonts/icon/icons.woff') format('woff'),
+  url('../fonts/icon/icons.ttf') format('truetype'),
+  url('../fonts/icon/icons.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.icon {
+  font-family: icons;
+}
+.icon-cancel-circled:before {
+  content: '\E800';
+  font-size: 18px;
+}
 .fileLoader {
   position: relative;
   width: 100%;
@@ -59,7 +78,7 @@
   bottom: 20px;
   left: 50%;
   cursor: pointer;
-  z-index: 3;
+  z-index: 1;
   width: 160px;
   padding: 0 10px;
   border: none;
@@ -91,11 +110,28 @@
   }
 }
 
-
 #fileLoader__delete {
-  left: 180px;
   background: #fd3434;
-  border-color: #d10000;
+  box-shadow: 0 2px 0 0 #d10000;
+}
+
+#fileLoader__upload {
+  background: #35c5ca;
+  box-shadow: 0 2px 0 0 #1d999e, 0 2px 10px 0 #35c5ca;
+}
+
+.fileLoad__result--button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+.fileLoad__result--button button {
+  position: static;
+  width: calc(50% - 7px);
+  transform: translate(0, 0)
 }
 
 .form__upload--button:hover, .fileLoad__remove:hover {
@@ -111,7 +147,9 @@
   font-weight: bold;
   padding: 0 8px;
   color: red;
-  cursor: pointer
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .form__upload {

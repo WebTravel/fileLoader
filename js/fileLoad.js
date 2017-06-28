@@ -4,6 +4,7 @@
 var defaults = {
  'addButtonText' : 'Выберите файлы', // текст кнопки добавления файлов
  'deleteButtonText' : 'Удалить все файлы', // текст кнопки удаления файлов
+ 'uploadButtonText' : 'Загрузить файлы', // текст кнопки удаления файлов
   'extensionText' : 'Допустимое расширение файлов:', // текст предупреждения допустимых расширений файла
   'dropText' : 'Перенесите файлы мышью',//текст кнопки ниже
  'check' : true, // проверка на дублирование файлов
@@ -26,7 +27,8 @@ FileLoader.prototype.init = function () {
       inputText = '<input type="file" id="fileLoader__input" class="form__upload--file" name="files" multiple>',
       addFileButton = '<button class="form__upload--button" id="fileLoader__add">'+ self.options.addButtonText +'</button>',
       removeAllFilesButton = '<button class="form__upload--button" id="fileLoader__delete">'+ self.options.deleteButtonText +'</button>',
-      removeFile = '<span class="fileLoad__remove">&#9746;</span>',
+      uploadButton = '<button class="form__upload--button" id="fileLoader__upload">'+ self.options.uploadButtonText +'</button>',
+      removeFile = '<span class="fileLoad__remove icon icon-cancel-circled"></span>',
       resultListWrapper = '<div class="fileLoader__result--list"></div>',
       dropTitle='<div class="fileLoader__title">'+ self.options.dropText +'</div>'
       form = '<form action="" id="fileLoader" class="fileLoader"><div class="form__upload" id="dropzone">' + inputText + addFileButton + dropTitle + '</div></form>',
@@ -80,7 +82,7 @@ FileLoader.prototype.init = function () {
         var list = files[idx].name;
         $('.fileLoader__result--list').append('<div class="fileLoad__result--item">' + list + removeFile + '</div>');
         if($('#fileLoader__delete').length == 0) {
-          $('#fileLoader__add').after(removeAllFilesButton);
+          $('.fileLoader__result--list').after('<div class="fileLoad__result--button">' + removeAllFilesButton + uploadButton + '</div>');
         }
       }
 
